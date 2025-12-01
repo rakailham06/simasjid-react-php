@@ -11,35 +11,29 @@ const Keuangan = () => {
       document.title = "Keuangan - Masjid Al-Furqan";
     }, []);
   
-  // State Form & Modal (Tetap sama seperti sebelumnya)
   const [form, setForm] = useState({ jenis: 'Pemasukan', kategori: '', jumlah: '', keterangan: '', dicatat_oleh_id: 1 });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const API_URL = 'http://localhost/simasjid/backend/api.php?table=keuangan'; // Sesuaikan folder
+  const API_URL = 'http://localhost/simasjid/backend/api.php?table=keuangan'; 
 
-  // 1. Fetch Data
   const fetchData = async () => {
     const res = await axios.get(API_URL);
     setRawData(res.data);
-    setFilteredData(res.data); // Awalnya tampilkan semua
+    setFilteredData(res.data); 
   };
 
   useEffect(() => { fetchData() }, []);
 
-  // 2. Logic Filter & Searching (Reporting)
   useEffect(() => {
     let result = rawData;
 
-    // Filter Tanggal
     if (filter.startDate) {
       result = result.filter(item => item.tanggal >= filter.startDate);
     }
     if (filter.endDate) {
-      // Tambah ' 23:59:59' agar mencakup sampai akhir hari tersebut
       result = result.filter(item => item.tanggal <= filter.endDate + ' 23:59:59');
     }
 
-    // Filter Search
     if (filter.search) {
       result = result.filter(item => 
         item.kategori.toLowerCase().includes(filter.search.toLowerCase()) ||
@@ -50,24 +44,20 @@ const Keuangan = () => {
     setFilteredData(result);
   }, [filter, rawData]);
 
-  // Hitung Total (Otomatis berdasarkan filter)
   const totalMasuk = filteredData.filter(i => i.jenis === 'Pemasukan').reduce((a,b) => a + Number(b.jumlah), 0);
   const totalKeluar = filteredData.filter(i => i.jenis === 'Pengeluaran').reduce((a,b) => a + Number(b.jumlah), 0);
 
-  // Fungsi Cetak
   const handlePrint = () => {
     window.print();
   };
   
-  // ... (Fungsi handleSubmit & handleDelete tetap sama, copy dari kode sebelumnya) ...
-  // SAYA PERSINGKAT UTK MENAMPILKAN LOGIC BARU SAJA
   const handleSubmit = async (e) => { e.preventDefault(); await axios.post(API_URL, {...form, tanggal: new Date().toISOString().slice(0, 19).replace('T', ' ')}); setIsModalOpen(false); fetchData(); };
   const handleDelete = async (id) => { if(confirm('Hapus?')) { await axios.delete(`${API_URL}&id=${id}`); fetchData(); }};
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
       
-      {/* HEADER: Hilang saat diprint */}
+      {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 print:hidden gap-4">
         <h1 className="text-2xl font-bold text-gray-800">Keuangan Masjid</h1>
         <div className="flex gap-2">
@@ -80,7 +70,7 @@ const Keuangan = () => {
         </div>
       </div>
 
-      {/* FILTER BAR: Hilang saat diprint */}
+      {/* FILTER BAR */}
       <div className="bg-gray-50 p-4 rounded-lg mb-6 flex flex-wrap gap-4 items-end print:hidden border">
         <div>
            <label className="text-xs font-bold text-gray-500">Dari Tanggal</label>
@@ -99,7 +89,7 @@ const Keuangan = () => {
         </div>
       </div>
 
-      {/* JUDUL CETAK: Hanya muncul saat diprint */}
+      {/* JUDUL CETAK */}
       <div className="hidden print:block text-center mb-6">
         <h2 className="text-2xl font-bold">Laporan Keuangan Masjid</h2>
         <p>Periode: {filter.startDate || 'Awal'} s/d {filter.endDate || 'Sekarang'}</p>
@@ -155,11 +145,9 @@ const Keuangan = () => {
         </table>
       </div>
 
-      {/* MODAL (Tetap sama seperti kode sebelumnya, copy paste saja bagian ini) */}
+      {/* MODAL */}
       {isModalOpen && (
          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 print:hidden">
-            {/* ... Isi form modal sama seperti sebelumnya ... */}
-            {/* Tips: Gunakan kode modal dari jawaban 'Keuangan.jsx' sebelumnya */}
              <div className="bg-white p-6 rounded w-96">
                 <h3 className="font-bold mb-4">Tambah Data</h3>
                 <form onSubmit={handleSubmit} className="space-y-3">
