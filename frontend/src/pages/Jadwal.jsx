@@ -7,16 +7,14 @@ const Jadwal = () => {
   const [listPengurus, setListPengurus] = useState([]); // Data untuk dropdown
   const [isModalOpen, setIsModalOpen] = useState(false);
   
-  // State Form (Default value string kosong biar dropdown 'Pilih' muncul)
   const [form, setForm] = useState({ 
     tanggal: '', 
     waktu_sholat: 'Subuh', 
     imam_id: '', 
     muadzin_id: '',
-    khatib_id: '' // Tambahan untuk Jumat
+    khatib_id: '' 
   });
 
-  // GANTI URL SESUAI FOLDER
   const BASE_URL = 'http://localhost/simasjid/backend/api.php';
 
   useEffect(() => {
@@ -26,11 +24,9 @@ const Jadwal = () => {
 
   const fetchData = async () => {
     try {
-      // 1. Ambil Data Jadwal (Sudah di-join Namanya di Backend)
       const resJadwal = await axios.get(`${BASE_URL}?table=jadwal_imam`);
       setData(resJadwal.data);
 
-      // 2. Ambil Data Pengurus (Untuk isi Dropdown)
       const resPengurus = await axios.get(`${BASE_URL}?table=pengurus`);
       setListPengurus(resPengurus.data);
     } catch (error) { console.error(error); }
@@ -39,12 +35,10 @@ const Jadwal = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Validasi sederhana
       if (!form.imam_id || !form.muadzin_id) {
         alert("Mohon pilih Imam dan Muadzin");
         return;
       }
-      // Jika Jumat, Khatib wajib diisi
       if (form.waktu_sholat === 'Jumat' && !form.khatib_id) {
         alert("Untuk Sholat Jumat, Khatib wajib diisi!");
         return;
@@ -53,7 +47,6 @@ const Jadwal = () => {
       await axios.post(`${BASE_URL}?table=jadwal_imam`, form);
       setIsModalOpen(false);
       
-      // Reset Form
       setForm({ tanggal: '', waktu_sholat: 'Subuh', imam_id: '', muadzin_id: '', khatib_id: '' });
       fetchData();
     } catch (error) {
