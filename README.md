@@ -66,10 +66,10 @@ Bagian ini dilindungi oleh sistem autentikasi (Login) dan hanya untuk pengurus m
 4.  Buka link yang muncul (`http://localhost:5173`) di browser.
 
 ## Tampilan Website
-Dashboard Jamaah (Frontend)
+### Dashboard Jamaah (Frontend)
 <img width="1919" height="866" alt="tampilan-frontend" src="https://github.com/user-attachments/assets/44c17e13-3174-4e4b-89d8-dfde3fe6e691" />
 
-Panel Admin (Backend)
+### Panel Admin (Backend)
 <img width="1919" height="868" alt="tampilan-backend" src="https://github.com/user-attachments/assets/58fd15f5-4b62-421d-a049-f644b607189d" />
 
 ## Akun Admin
