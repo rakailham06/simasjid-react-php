@@ -3,40 +3,33 @@ import axios from 'axios';
 import { Trash2, Plus, Package, Search } from 'lucide-react';
 
 const Inventaris = () => {
-  // State Data Utama
   const [rawData, setRawData] = useState([]); // Data asli dari DB
   const [filteredData, setFilteredData] = useState([]); // Data setelah di-search
   const [listPengurus, setListPengurus] = useState([]); // Data untuk dropdown
   const [search, setSearch] = useState('');
   
-  // State Form & Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({ 
     nama_barang: '', kode_barang: '', jumlah: '', satuan: 'unit', 
     kondisi: 'Baik', lokasi_simpan: '', penanggung_jawab_id: '' 
   });
 
-  // GANTI URL SESUAI FOLDER ANDA (simasjid / sim-masjid)
   const BASE_URL = 'http://localhost/simasjid/backend/api.php';
 
   useEffect(() => {
     document.title = "Inventaris - Masjid Al-Furqan";
     fetchData();
   }, []);
-
-  // 1. Fetch Data (Ambil Barang & Pengurus)
+  
   const fetchData = async () => {
     try {
-      // Ambil Data Inventaris (sudah di-join di backend agar muncul nama_pj)
       const resBarang = await axios.get(`${BASE_URL}?table=inventaris`);
       setRawData(resBarang.data);
-      setFilteredData(resBarang.data); // Reset filter
+      setFilteredData(resBarang.data); 
 
-      // Ambil Data Pengurus (Untuk Dropdown Form)
       const resPengurus = await axios.get(`${BASE_URL}?table=pengurus`);
       setListPengurus(resPengurus.data);
       
-      // Set default penanggung jawab ke orang pertama (UX)
       if (resPengurus.data.length > 0) {
         setForm(f => ({ ...f, penanggung_jawab_id: resPengurus.data[0].id }));
       }
@@ -45,7 +38,6 @@ const Inventaris = () => {
     }
   };
 
-  // 2. Logic Searching (Client Side - Lebih Cepat)
   useEffect(() => {
     if (search === '') {
       setFilteredData(rawData);
@@ -60,22 +52,18 @@ const Inventaris = () => {
     }
   }, [search, rawData]);
 
-  // 3. Handle Submit (Tambah Data)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Perhatikan URL menggunakan '&' bukan '?' karena parameter kedua
       await axios.post(`${BASE_URL}?table=inventaris`, form);
       setIsModalOpen(false);
-      // Reset form penting
       setForm(prev => ({ ...prev, nama_barang: '', kode_barang: '', jumlah: '' }));
-      fetchData(); // Refresh tabel
+      fetchData(); 
     } catch (error) {
       alert("Gagal menyimpan data.");
     }
   };
 
-  // 4. Handle Delete
   const handleDelete = async (id) => {
     if(confirm('Yakin ingin menghapus barang ini?')) {
       try {
@@ -140,7 +128,6 @@ const Inventaris = () => {
                     </span>
                   </td>
                   <td className="p-3 text-gray-600">{item.lokasi_simpan}</td>
-                  {/* Menampilkan Nama PJ (hasil join backend) */}
                   <td className="p-3 text-blue-600">{item.nama_pj || '-'}</td>
                   <td className="p-3">
                     <button onClick={() => handleDelete(item.id)} className="text-red-500 hover:bg-red-50 p-1.5 rounded transition">
@@ -201,7 +188,7 @@ const Inventaris = () => {
                   </select>
               </div>
 
-              {/* Dropdown Penanggung Jawab (PENTING) */}
+              {/* Dropdown Penanggung Jawab */}
               <div>
                 <label className="text-xs font-bold text-gray-500 mb-1 block">Penanggung Jawab</label>
                 <select 
